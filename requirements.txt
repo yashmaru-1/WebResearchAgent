@@ -1,7 +1,7 @@
 streamlit
-aiohttp
+requests
 beautifulsoup4
+aiohttp
 python-dotenv
 fpdf
 serpapi
-requests
