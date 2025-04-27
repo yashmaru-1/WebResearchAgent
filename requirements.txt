@@ -1,0 +1,7 @@
+streamlit
+aiohttp
+beautifulsoup4
+python-dotenv
+fpdf
+serpapi
+requests
