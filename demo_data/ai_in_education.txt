@@ -1,0 +1,8 @@
+Research Topic: Impact of Artificial Intelligence on Education
+
+- AI is revolutionizing personalized learning by adapting lessons to student progress.
+- Intelligent Tutoring Systems provide real-time feedback and customized problem sets.
+- AI is automating administrative tasks, saving time for teachers.
+- Chatbots are supporting student queries outside classroom hours.
+- AI-driven career guidance platforms suggest optimal paths based on aptitude.
+- Ethical concerns include data privacy of students and algorithmic bias.

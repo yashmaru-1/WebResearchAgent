@@ -1,0 +1,8 @@
+Research Topic: Future of Artificial Intelligence in Healthcare
+
+- AI is transforming healthcare by improving diagnostics, patient care, drug discovery, and hospital operations.
+- Machine Learning models are achieving near-radiologist level accuracy for detecting diseases.
+- NLP is helping predict diseases early through patient record analysis.
+- Robotic surgeries are becoming more precise and minimally invasive.
+- Healthcare AI market projected to reach $67 billion by 2027.
+- Ethical challenges include bias, data privacy, and accountability of AI systems.

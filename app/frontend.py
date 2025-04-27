@@ -4,8 +4,6 @@ import asyncio
 import streamlit as st
 from dotenv import load_dotenv
 
-
-
 sys.path.append(os.path.join(os.path.dirname(__file__), '../agent'))
 
 from research_agent import ResearchAgent
@@ -37,6 +35,32 @@ agent = ResearchAgent(
     response_generator=response_generator
 )
 
+demo_mode = False
+if not os.getenv("GEMINI_API_KEY") or not os.getenv("SERP_API_KEY"):
+    demo_mode = True
+
+demo_files = {
+    "Future of AI in Healthcare": "demo_data/healthcare_ai.txt",
+    "Latest News from Gujarat": "demo_data/gujarat_news.txt",
+    "AI's Impact on Education": "demo_data/ai_in_education.txt"
+}
+
+demo_links = {
+    "healthcare_ai.txt": [
+        "https://healthnews.com/ai-in-medicine",
+        "https://futureofhealthcare.com/ai-trends"
+    ],
+    "gujarat_news.txt": [
+        "https://timesofindia.indiatimes.com/city/ahmedabad",
+        "https://economictimes.indiatimes.com/topic/gujarat"
+    ],
+    "ai_in_education.txt": [
+        "https://edtechmagazine.com/article/ai-in-education",
+        "https://forbes.com/ai-transforming-schools"
+    ]
+}
+
+# Streamlit app setup
 st.set_page_config(page_title="Smart Research Assistant", page_icon="🧠", layout="wide")
 
 st.markdown("""
@@ -48,13 +72,19 @@ st.markdown("""
 
 st.divider()
 
-query = st.text_input(
-    "Enter your research topic",
-    placeholder="e.g., Impact of AI on education, Gujarat latest news",
-    key="query_input"
-)
+if demo_mode:
+    st.warning("⚡ Running in DEMO MODE with Sample Research Reports (No API keys detected)")
 
-
+query = ""
+if demo_mode:
+    st.subheader("📚 Choose a Demo Research Topic")
+    selected_demo = st.selectbox("Select a demo research:", list(demo_files.keys()))
+else:
+    query = st.text_input(
+        "Enter your research topic",
+        placeholder="e.g., Impact of AI on education, Gujarat latest news",
+        key="query_input"
+    )
 
 def get_website_name(url):
     try:
@@ -64,20 +94,27 @@ def get_website_name(url):
     except:
         return "Website"
 
-if query:
+if (query and not demo_mode) or (demo_mode and selected_demo):
     with st.spinner("Researching and generating report..."):
         try:
-            result = asyncio.run(agent.process_query(query))
+            if demo_mode:
+                file_path = demo_files[selected_demo]
+                with open(file_path, "r", encoding="utf-8") as f:
+                    demo_content = f.read()
+                result = (demo_content, demo_links.get(os.path.basename(file_path), []))
+            else:
+                result = asyncio.run(agent.process_query(query))
+
             if isinstance(result, tuple) and len(result) == 2:
                 summary, sources = result
-                st.success("Research completed")
+                st.success("✅ Research completed!")
 
                 col1, col2 = st.columns((2, 1))
                 with col1:
-                    st.subheader("Research Report")
+                    st.subheader("📑 Research Report")
                     st.markdown(summary)
                 with col2:
-                    st.subheader("Sources")
+                    st.subheader("🔗 Sources")
                     if sources:
                         for link in sources:
                             site_name = get_website_name(link)
@@ -85,10 +122,9 @@ if query:
                     else:
                         st.info("No sources found.")
 
-                
             else:
                 st.error("Unexpected backend output format.")
         except Exception as e:
             st.error(f"Error occurred: {str(e)}")
 else:
-    st.info("Enter a research topic to start.")
+    st.info("Enter a research topic above to start.")
